@@ -1,0 +1,114 @@
+syntax = "proto3";
+package university;
+import "google/protobuf/empty.proto";
+
+
+enum LoanStatus {
+  ONGOING = 0;
+  RETURNED = 1;
+  LATE = 2;
+}
+
+message Book {
+  string id = 1;
+  string title = 2;
+  string author = 3;
+  string isbn = 4;
+  string publisher = 5;
+  int32 page_count = 6;
+  int32 stock = 7;
+}
+
+message Student {
+  string id = 1;
+  string name = 2;
+  string student_number = 3;
+  string email = 4;
+  bool is_active = 5;
+}
+
+message Loan {
+  string id = 1;
+  string student_id = 2;
+  string book_id = 3;
+  string loan_date = 4;
+  string return_date = 5;
+  LoanStatus status = 6;
+}
+
+message ListBooksRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+message ListBooksResponse {
+  repeated Book books = 1;
+  string next_page_token = 2;
+}
+message GetBookRequest {
+  string id = 1;
+}
+message CreateBookRequest {
+  Book book = 1;
+}
+message UpdateBookRequest {
+  Book book = 1;
+}
+message DeleteBookRequest {
+  string id = 1;
+}
+
+message ListStudentsRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+message ListStudentsResponse {
+  repeated Student students = 1;
+  string next_page_token = 2;
+}
+message GetStudentRequest {
+  string id = 1;
+}
+message CreateStudentRequest {
+  Student student = 1;
+}
+message UpdateStudentRequest {
+  Student student = 1;
+}
+message DeleteStudentRequest {
+  string id = 1;
+}
+
+message GetLoanRequest {
+  string id = 1;
+}
+message LoanBookRequest {
+  string student_id = 1;
+  string book_id = 2;
+}
+
+message ReturnLoanRequest {
+  string id = 1;
+}
+
+service BooksService {
+  rpc ListBooks(ListBooksRequest) returns (ListBooksResponse);
+  rpc GetBook(GetBookRequest) returns (Book);
+  rpc CreateBook(CreateBookRequest) returns (Book);
+  rpc UpdateBook(UpdateBookRequest) returns (Book);
+  rpc DeleteBook(DeleteBookRequest) returns (google.protobuf.Empty);
+}
+
+service StudentsService {
+  rpc ListStudents(ListStudentsRequest) returns (ListStudentsResponse);
+  rpc GetStudent(GetStudentRequest) returns (Student);
+  rpc CreateStudent(CreateStudentRequest) returns (Student);
+  rpc UpdateStudent(UpdateStudentRequest) returns (Student);
+  rpc DeleteStudent(DeleteStudentRequest) returns (google.protobuf.Empty);
+}
+
+service LoansService {
+  rpc ListLoans(google.protobuf.Empty) returns (stream Loan);
+  rpc GetLoan(GetLoanRequest) returns (Loan);
+  rpc LoanBook(LoanBookRequest) returns (Loan);
+  rpc ReturnBook(ReturnLoanRequest) returns (Loan);
+}
